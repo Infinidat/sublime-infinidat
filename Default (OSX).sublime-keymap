@@ -1,0 +1,4 @@
+[
+    {"command": "grep", "keys": ["super+shift+g"]},
+    {"command": "grep_exclude", "keys": ["super+shift+k"]}
+]

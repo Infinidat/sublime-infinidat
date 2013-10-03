@@ -1,0 +1,23 @@
+[
+    {
+        "caption": "Edit",
+        "mnemonic": "e",
+        "id": "edit",
+        "children":
+        [
+            {
+                "caption": "Grep",
+                "mnemonic": "",
+                "id": "grep",
+                "command":"grep"
+             },
+            {
+                "caption": "Grep Exclude",
+                "mnemonic": "",
+                "id": "grep_exclude",
+                "command":"grep_exclude"
+             }
+
+        ]
+    }
+]

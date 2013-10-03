@@ -1,0 +1,4 @@
+[
+    {"command": "grep", "caption": "Grep"},
+    {"command": "grep_exclude", "caption": "Grep Exclude"}
+]
