@@ -56,7 +56,6 @@ def stay_in_place(view):
     yield
     view.sel().clear()
     view.sel().add(view.find_all(word, sublime.LITERAL)[index])
-    view.run_command("find_under")
 
 
 class GrepCommand(sublime_plugin.TextCommand):
