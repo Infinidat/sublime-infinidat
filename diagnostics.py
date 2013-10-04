@@ -51,7 +51,7 @@ def get_files_of_other_node(window):
     filepath = window.active_view().file_name()
     prefix = get_open_file_prefix(filepath)
     diagnostics_dir, hostname, timestamp, files, var, log, dirname, basename = prefix.rsplit(path.sep, 7)
-    other_hostname = hostname[:-1] + str(int(hostname[-1])+1)
+    other_hostname = hostname[:-1] + "1" if hostname[-1] == "2" else "2"
     return get_file_series(path.join(diagnostics_dir, other_hostname, "*", files, var, log, "*", basename))
 
 
