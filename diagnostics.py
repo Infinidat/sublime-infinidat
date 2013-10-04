@@ -18,7 +18,7 @@ def strftime(datetime_object, dateformat=STRPTIME_FORMAT):
     return datetime_object.strftime(dateformat)
 
 
-def get_open_file_prefix(filepath):
+def get_file_prefix(filepath):
     if filepath[-1].isdigit():
         return filepath.rsplit('.', 1)[0]
     return filepath
@@ -49,7 +49,7 @@ def get_logs(window):
 
 def get_files_of_other_node(window):
     filepath = window.active_view().file_name()
-    prefix = get_open_file_prefix(filepath)
+    prefix = get_file_prefix(filepath)
     diagnostics_dir, hostname, timestamp, files, var, log, dirname, basename = prefix.rsplit(path.sep, 7)
     other_hostname = hostname[:-1] + "1" if hostname[-1] == "2" else "2"
     return get_file_series(path.join(diagnostics_dir, other_hostname, "*", files, var, log, "*", basename))
@@ -72,7 +72,7 @@ def get_timeframe_in_file(filepath):
     return strptime(first), strptime(last)
 
 
-def files_by_timeframe(files):
+def get_files_timeframes(files):
     """:returns: from oldest to newest"""
     def generator():
         for filepath in files:
@@ -95,7 +95,7 @@ def show_timestamp_as_close_as_possible(view, t0):
         return
 
 
-def goto_timestamp(window, files, t0, ident):
+def goto_timestamp_in_files(window, files, t0, ident):
     try:
         [filepath] = [item['filepath'] for item in files if item['start'] <= t0 and t0 <= item['finish']]
     except ValueError:  # there is no file containing t0
@@ -108,7 +108,7 @@ def goto_timestamp(window, files, t0, ident):
 class OpenNextFile(sublime_plugin.WindowCommand):
     def run(self):
         filepath = self.window.active_view().file_name()
-        series = get_file_series(get_open_file_prefix(filepath))
+        series = get_file_series(get_file_prefix(filepath))
         index = (series.index(filepath)+1) % len(series)
         self.window.open_file(series[index])
 
@@ -116,7 +116,7 @@ class OpenNextFile(sublime_plugin.WindowCommand):
 class OpenPreviousFile(sublime_plugin.WindowCommand):
     def run(self):
         filepath = self.window.active_view().file_name()
-        series = get_file_series(get_open_file_prefix(filepath))
+        series = get_file_series(get_file_prefix(filepath))
         index = (series.index(filepath)-1) % len(series)
         self.window.open_file(series[index])
 
@@ -124,19 +124,19 @@ class OpenPreviousFile(sublime_plugin.WindowCommand):
 class GotoTrace(sublime_plugin.WindowCommand):
     def run(self):
         t0 = get_datetime_from_current_line(self.window)
-        files = files_by_timeframe(get_traces(self.window))
-        goto_timestamp(self.window, files, t0, "traces")
+        files = get_files_timeframes(get_traces(self.window))
+        goto_timestamp_in_files(self.window, files, t0, "traces")
 
 
 class GotoLog(sublime_plugin.WindowCommand):
     def run(self):
         t0 = get_datetime_from_current_line(self.window)
-        files = files_by_timeframe(get_logs(self.window))
-        goto_timestamp(self.window, files, t0, "logs")
+        files = get_files_timeframes(get_logs(self.window))
+        goto_timestamp_in_files(self.window, files, t0, "logs")
 
 
 class GotoOtherNode(sublime_plugin.WindowCommand):
     def run(self):
         t0 = get_datetime_from_current_line(self.window)
-        files = files_by_timeframe(get_files_of_other_node(self.window))
-        goto_timestamp(self.window, files, t0, "other node")
+        files = get_files_timeframes(get_files_of_other_node(self.window))
+        goto_timestamp_in_files(self.window, files, t0, "other node")
