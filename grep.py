@@ -5,7 +5,7 @@ from re import escape
 
 
 def key_func(item):
-    return min(item.a, item.b), max(item.a, item.b)
+    return item.begin(), item.end()
 
 
 def select_all_lines_containing_current_selection(view):
@@ -43,7 +43,7 @@ def log_grep_selection(view, edit, invert_selection=True):
 
 def get_selected_region(view):
     first_selection = view.sel()[0]
-    current_position = min(first_selection.a, first_selection.b), max(first_selection.a, first_selection.b)
+    current_position = first_selection.begin(), first_selection.end()
     word = view.substr(first_selection)
     return current_position, word
 
