@@ -8,3 +8,6 @@ Features
 
 * Grep
 * Grep Exclude (-v)
+* Log grep that preserves multi-line messages
+* Open Next File
+* Open Previous File

@@ -8,8 +8,7 @@
             {"caption": "Grep", "mnemonic": "", "id": "grep", "command":"grep"},
             {"caption": "Grep Exclude", "mnemonic": "", "id": "grep_exclude", "command":"grep_exclude"},
             {"caption": "Log Grep", "mnemonic": "", "id": "log_grep", "command":"log_grep"},
-            {"caption": "Log Grep Exclude", "mnemonic": "", "id": "log_grep_exclude", "command":"log_grep_exclude"},
-
+            {"caption": "Log Grep Exclude", "mnemonic": "", "id": "log_grep_exclude", "command":"log_grep_exclude"}
         ]
     }
 ]
