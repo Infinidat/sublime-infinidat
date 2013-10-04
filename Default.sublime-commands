@@ -1,4 +1,6 @@
 [
     {"command": "grep", "caption": "Grep"},
-    {"command": "grep_exclude", "caption": "Grep Exclude"}
+    {"command": "grep_exclude", "caption": "Grep Exclude"},
+    {"command": "log_grep", "caption": "Log Grep (preserve multi-line messages)"},
+    {"command": "log_grep_exclude", "caption": "Log Grep Exclude"}
 ]
