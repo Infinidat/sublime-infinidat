@@ -11,3 +11,5 @@ Features
 * Log grep that preserves multi-line messages
 * Open Next File
 * Open Previous File
+* Go to log file
+* Go to trace file

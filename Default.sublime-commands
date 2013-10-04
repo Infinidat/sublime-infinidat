@@ -4,5 +4,7 @@
     {"command": "log_grep", "caption": "Log Grep (preserve multi-line messages)"},
     {"command": "log_grep_exclude", "caption": "Log Grep Exclude"},
     {"command": "open_next_file", "caption": "Open Next File"},
-    {"command": "open_previous_file", "caption": "Open Previous File"}
+    {"command": "open_previous_file", "caption": "Open Previous File"},
+    {"command": "goto_trace", "caption": "Goto Trace"},
+    {"command": "goto_log", "caption": "Goto Log"}
 ]
