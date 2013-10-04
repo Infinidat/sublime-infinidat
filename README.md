@@ -13,3 +13,4 @@ Features
 * Open Previous File
 * Go to log file
 * Go to trace file
+* Go to other node

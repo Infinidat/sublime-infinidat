@@ -1,21 +1,21 @@
 
 import sublime, sublime_plugin
 from glob import glob
-from os import path
+from os import path, pardir
 from time import sleep
-from datetime import datetime
-from re import search, finditer
+from datetime import datetime, timedelta
+from re import search, finditer, escape
+from itertools import product
 
 STRPTIME_FORMAT = "%Y-%m-%d %H:%M:%S.%f"
-STRFTIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
 
 def strptime(datestring):
     return datetime.strptime(datestring, STRPTIME_FORMAT)
 
 
-def strftime(datetime_object):
-    return datetime_object.strftime(STRFTIME_FORMAT)
+def strftime(datetime_object, dateformat=STRPTIME_FORMAT):
+    return datetime_object.strftime(dateformat)
 
 
 def get_open_file_prefix(filepath):
@@ -47,6 +47,14 @@ def get_logs(window):
     return get_file_series(path.join(dirname, "izbox.log"))
 
 
+def get_files_of_other_node(window):
+    filepath = window.active_view().file_name()
+    prefix = get_open_file_prefix(filepath)
+    diagnostics_dir, hostname, timestamp, files, var, log, dirname, basename = prefix.rsplit(path.sep, 7)
+    other_hostname = hostname[:-1] + str(int(hostname[-1])+1)
+    return get_file_series(path.join(diagnostics_dir, other_hostname, "*", files, var, log, "*", basename))
+
+
 def pairwise(iterable):
     from itertools import tee, izip
     "s -> (s0,s1), (s1,s2), (s2, s3), ..."
@@ -64,7 +72,7 @@ def get_timeframe_in_file(filepath):
     return strptime(first), strptime(last)
 
 
-def files_by_timestamp(files):
+def files_by_timeframe(files):
     """:returns: from oldest to newest"""
     def generator():
         for filepath in files:
@@ -73,6 +81,28 @@ def files_by_timestamp(files):
     def key(item):
         return item['start']
     return sorted(generator(), key=key)
+
+
+def show_timestamp_as_close_as_possible(view, t0):
+    datestring = strftime(t0)
+    for substring in [datestring[:count] for count in range(0, -len(datestring), -1)]:
+        location = view.find(substring, 0, sublime.LITERAL)
+        if location.a == -1:  # found nothing
+            continue
+        view.show_at_center(location)
+        view.sel().clear()
+        view.sel().add(location)
+        return
+
+
+def goto_timestamp(window, files, t0, ident):
+    try:
+        [filepath] = [item['filepath'] for item in files if item['start'] <= t0 and t0 <= item['finish']]
+    except ValueError:  # there is no file containing t0
+        sublime.error_message("{} not found in {}".format(t0, ident))
+        return
+    view = window.open_file(filepath)
+    show_timestamp_as_close_as_possible(view, t0)
 
 
 class OpenNextFile(sublime_plugin.WindowCommand):
@@ -94,22 +124,19 @@ class OpenPreviousFile(sublime_plugin.WindowCommand):
 class GotoTrace(sublime_plugin.WindowCommand):
     def run(self):
         t0 = get_datetime_from_current_line(self.window)
-        traces = files_by_timestamp(get_traces(self.window))
-        for trace_dict in traces:
-            if trace_dict['start'] <= t0 and t0 <= trace_dict['finish']:
-                view = self.window.open_file(trace_dict['filepath'])
-                view.show_at_center(view.find(strftime(t0), 0))
-                return
-        sublime.error_message("{} not found in traces".format(t0))
+        files = files_by_timeframe(get_traces(self.window))
+        goto_timestamp(self.window, files, t0, "traces")
 
 
 class GotoLog(sublime_plugin.WindowCommand):
     def run(self):
         t0 = get_datetime_from_current_line(self.window)
-        logs = files_by_timestamp(get_logs(self.window))
-        for trace_dict in logs:
-            if trace_dict['start'] <= t0 and t0 <= trace_dict['finish']:
-                view = self.window.open_file(trace_dict['filepath'])
-                view.show_at_center(view.find(strftime(t0), 0))
-                return
-        sublime.error_message("{} not found in logs".format(t0))
+        files = files_by_timeframe(get_logs(self.window))
+        goto_timestamp(self.window, files, t0, "logs")
+
+
+class GotoOtherNode(sublime_plugin.WindowCommand):
+    def run(self):
+        t0 = get_datetime_from_current_line(self.window)
+        files = files_by_timeframe(get_files_of_other_node(self.window))
+        goto_timestamp(self.window, files, t0, "other node")
