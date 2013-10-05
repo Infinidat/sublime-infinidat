@@ -102,6 +102,7 @@ def goto_timestamp_in_files(window, files, t0, ident):
         sublime.error_message("{} not found in {}".format(t0, ident))
         return
     view = window.open_file(filepath)
+    view.settings().set("word_wrap", False)
     show_timestamp_as_close_as_possible(view, t0)
 
 
