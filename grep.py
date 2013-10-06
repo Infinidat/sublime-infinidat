@@ -1,11 +1,9 @@
 import sublime, sublime_plugin
 from contextlib import contextmanager
-from itertools import count
-from re import escape
 
 
-def key_func(item):
-    return item.begin(), item.end()
+def compare_regions(item):
+    return item.begin()
 
 
 def select_all_lines_containing_current_selection(view):
@@ -17,28 +15,28 @@ def grep_selection(view, edit, invert_selection=True):
     select_all_lines_containing_current_selection(view)
     if invert_selection:
         view.run_command("invert_selection")
-    [view.erase(edit, region) for region in sorted(view.sel(), key=key_func, reverse=True)]
+    [view.erase(edit, region) for region in sorted(view.sel(), key=compare_regions, reverse=True)]
 
 
-def exapnd_tracebacks(view):
+def expand_multiline_messages(view):
     selection = view.sel()
     regions = list(selection)
     for region in regions:
         next_traceback_line_region = view.find(r"(?:\n[^\d].*)+", region.b+1)
         if next_traceback_line_region.a == next_traceback_line_region.b:
-            break
+            continue
         if (next_traceback_line_region.a, next_traceback_line_region.b) == (-1, -1):
-            break
+            continue
         selection.add(next_traceback_line_region)
     view.run_command("expand_selection", dict(to="line"))
 
 
 def log_grep_selection(view, edit, invert_selection=True):
     select_all_lines_containing_current_selection(view)
-    exapnd_tracebacks(view)
+    expand_multiline_messages(view)
     if invert_selection:
         view.run_command("invert_selection")
-    [view.erase(edit, region) for region in sorted(view.sel(), key=key_func, reverse=True)]
+    [view.erase(edit, region) for region in sorted(view.sel(), key=compare_regions, reverse=True)]
 
 
 def get_selected_region(view):
