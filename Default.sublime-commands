@@ -7,5 +7,6 @@
     {"command": "open_previous_file", "caption": "Open Previous File"},
     {"command": "goto_trace", "caption": "Goto Trace"},
     {"command": "goto_log", "caption": "Goto Log"},
-    {"command": "goto_other_node", "caption": "Goto Other Node"}
+    {"command": "goto_other_node", "caption": "Goto Other Node"},
+    {"command": "expand_log_message", "caption": "Expand Log Message"}
 ]

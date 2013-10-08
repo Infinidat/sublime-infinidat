@@ -18,6 +18,16 @@ def grep_selection(view, edit, invert_selection=True):
     [view.erase(edit, region) for region in sorted(view.sel(), key=compare_regions, reverse=True)]
 
 
+def expand_multiline_message(view):
+    selection = view.sel()[0]
+    view.sel().clear()
+    new_messages = view.find_all(r"^\d+")
+    for index, region in enumerate(new_messages):
+        if region.a <= selection.a and new_messages[(index+1)%len(new_messages)].a >= selection.a:
+            view.sel().add(region)
+            expand_multiline_messages(view)
+
+
 def expand_multiline_messages(view):
     selection = view.sel()
     regions = list(selection)
@@ -87,3 +97,7 @@ class LogGrepExcludeCommand(sublime_plugin.TextCommand):
         log_grep_selection(self.view, edit, invert_selection=False)
         self.view.sel().clear()
 
+
+class ExpandLogMessage(sublime_plugin.TextCommand):
+    def run(self, edit):
+        expand_multiline_message(self.view)
