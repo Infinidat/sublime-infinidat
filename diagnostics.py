@@ -25,7 +25,7 @@ def get_file_prefix(filepath):
 
 
 def get_file_series(prefix):
-    return list(glob(prefix + "*"))
+    return sorted(glob(prefix + "*"))
 
 
 def get_datetime_from_current_line(window):
