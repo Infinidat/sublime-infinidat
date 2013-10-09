@@ -6,16 +6,33 @@ from time import sleep
 from datetime import datetime, timedelta
 from re import search, finditer, escape
 from itertools import product
+from datetime import datetime
+from functools import wraps
 
 STRPTIME_FORMAT = "%Y-%m-%d %H:%M:%S.%f"
+DATE_FORMATS = [
+                "%d/%m/%y", "%d/%m/%Y", "%d-%m-%y", "%d-%m-%Y",
+                "%m/%d/%y", "%m/%d/%Y", "%m-%d-%y", "%m-%d-%Y",
+                "%d/%m/%y %H:%M:%S", "%d/%m/%Y %H:%M:%S", "%d-%m-%y %H:%M:%S", "%d-%m-%Y %H:%M:%S",
+                "%m/%d/%y %H:%M:%S", "%m/%d/%Y %H:%M:%S", "%m-%d-%y %H:%M:%S", "%m-%d-%Y %H:%M:%S",
+                "%d/%m/%y-%H-%M-%S", "%m/%d/%y-%H-%M-%S",
+                "%d/%m/%y %H:%M", "%d/%m/%Y %H:%M", "%d-%m-%y %H:%M", "%d-%m-%Y %H:%M",
+                "%m/%d/%y %H:%M", "%m/%d/%Y %H:%M", "%m-%d-%y %H:%M", "%m-%d-%Y %H:%M",
+                "%H:%M:%S", "%H:%M",
+                "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M"]
 
 
-def strptime(datestring):
-    return datetime.strptime(datestring, STRPTIME_FORMAT)
-
-
-def strftime(datetime_object, dateformat=STRPTIME_FORMAT):
-    return datetime_object.strftime(dateformat)
+def parse_datestring(datestring):
+    from argparse import ArgumentTypeError
+    from datetime import datetime
+    if datestring == "now":
+        datestring = get_default_timestamp()
+    for format in DATE_FORMATS:
+        try:
+            return datetime.strptime(datestring, format)
+        except:
+            pass
+    raise ArgumentTypeError("Invalid datetime string: {!r}".format(datestring))
 
 
 def get_file_prefix(filepath):
@@ -141,3 +158,32 @@ class GotoOtherNode(sublime_plugin.WindowCommand):
         t0 = get_datetime_from_current_line(self.window)
         files = get_files_timeframes(get_files_of_other_node(self.window))
         goto_timestamp_in_files(self.window, files, t0, "other node")
+
+
+class GotoDate(sublime_plugin.WindowCommand):
+    def run(self):
+        filepath = self.window.active_view().file_name()
+        files = get_files_timeframes(get_file_series(get_file_prefix(filepath)))
+
+        def innerfunc(datestring):
+            t0 = parse_datestring(datestring)
+            goto_timestamp_in_files(self.window, files, t0, "this type of files")
+
+        self.window.show_input_panel("Enter timestamp", "", innerfunc, None, None)
+
+
+class GotoTimestamp(sublime_plugin.WindowCommand):
+    def run(self):
+        filepath = self.window.active_view().file_name()
+        files = get_files_timeframes(get_file_series(get_file_prefix(filepath)))
+
+        def innerfunc(timestamp_string):
+            timestamp = int(timestamp_string)
+            try:
+                t0 = datetime.utcfromtimestamp(timestamp_string)
+            except ValueError:
+                t0 = datetime.utcfromtimestamp(timestamp_string/1000)
+            goto_timestamp_in_files(self.window, files, t0, "this type of files")
+
+        self.window.show_input_panel("Enter timestamp", "", innerfunc, None, None)
+

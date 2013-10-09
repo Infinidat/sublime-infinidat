@@ -5,9 +5,11 @@
     {"command": "log_grep_exclude", "caption": "Infinidat: Log Grep Exclude"},
     {"command": "open_next_file", "caption": "Infinidat: Open Next File"},
     {"command": "open_previous_file", "caption": "Infinidat: Open Previous File"},
+    {"command": "expand_log_message", "caption": "Infinidat: Expand Log Message"},
+    {"command": "grep_tracebacks", "caption": "Infinidat: Grep Tracebacks"},
     {"command": "goto_trace", "caption": "Infinidat: Goto Trace"},
     {"command": "goto_log", "caption": "Infinidat: Goto Log"},
     {"command": "goto_other_node", "caption": "Infinidat: Goto Other Node"},
-    {"command": "expand_log_message", "caption": "Infinidat: Expand Log Message"},
-    {"command": "grep_tracebacks", "caption": "Infinidat: Grep Tracebacks"}
+    {"command": "goto_date", "caption": "Infinidat: Goto Date"},
+    {"command": "goto_timestamp", "caption": "Infinidat: Goto Timestamp"}
 ]

@@ -10,5 +10,18 @@
             {"caption": "Log Grep", "mnemonic": "", "id": "log_grep", "command":"log_grep"},
             {"caption": "Log Grep Exclude", "mnemonic": "", "id": "log_grep_exclude", "command":"log_grep_exclude"}
         ]
+    },
+    {
+        "caption": "Goto",
+        "mnemonic": "g",
+        "id": "goto",
+        "children":
+        [
+            {"caption": "Goto Goto Trace", "mnemonic": "", "id": "goto_trace", "command":"goto_trace"},
+            {"caption": "Goto Grep Log", "mnemonic": "", "id": "goto_log", "command":"goto_log"},
+            {"caption": "Goto Other Node", "mnemonic": "", "id": "goto_other_node", "command":"goto_other_node"},
+            {"caption": "Goto Date", "mnemonic": "", "id": "goto_date", "command":"goto_date"},
+            {"caption": "Goto Timestamp", "mnemonic": "", "id": "goto_timestamp", "command":"goto_timestamp"}
+        ]
     }
 ]
