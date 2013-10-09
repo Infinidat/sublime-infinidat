@@ -18,12 +18,11 @@ def grep_selection(view, edit, invert_selection=True):
     [view.erase(edit, region) for region in sorted(view.sel(), key=compare_regions, reverse=True)]
 
 
-def expand_multiline_message(view):
-    selection = view.sel()[0]
-    view.sel().clear()
-    new_messages = view.find_all(r"^\d+")
-    for index, region in enumerate(new_messages):
-        if region.a <= selection.a and new_messages[(index+1)%len(new_messages)].a >= selection.a:
+def expand_multiline_message(view, selection=None):
+    beginnings = view.find_all(r"^\d+.*$")
+    total = len(beginnings)
+    for index, region in enumerate(beginnings):
+        if region.a <= selection.a and beginnings[(index+1)%total].a >= selection.a:
             view.sel().add(region)
             expand_multiline_messages(view)
 
@@ -37,8 +36,7 @@ def expand_multiline_messages(view):
             continue
         if (next_traceback_line_region.a, next_traceback_line_region.b) == (-1, -1):
             continue
-        selection.add(next_traceback_line_region)
-    view.run_command("expand_selection", dict(to="line"))
+        selection.add(sublime.Region(next_traceback_line_region.a, next_traceback_line_region.b+1))
 
 
 def log_grep_selection(view, edit, invert_selection=True):
@@ -100,4 +98,16 @@ class LogGrepExcludeCommand(sublime_plugin.TextCommand):
 
 class ExpandLogMessage(sublime_plugin.TextCommand):
     def run(self, edit):
-        expand_multiline_message(self.view)
+        selection = self.view.sel()[0]
+        self.view.sel().clear()
+        expand_multiline_message(self.view, selection)
+
+
+class GrepTracebacks(sublime_plugin.TextCommand):
+    def run(self, edit):
+        self.view.sel().clear()
+        for selection in self.view.find_all("Traceback", sublime.LITERAL):
+            expand_multiline_message(self.view, selection)
+        self.view.run_command("invert_selection")
+        [self.view.erase(edit, region) for region in sorted(self.view.sel(), key=compare_regions, reverse=True)]
+

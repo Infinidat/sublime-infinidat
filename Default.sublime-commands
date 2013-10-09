@@ -8,5 +8,6 @@
     {"command": "goto_trace", "caption": "Infinidat: Goto Trace"},
     {"command": "goto_log", "caption": "Infinidat: Goto Log"},
     {"command": "goto_other_node", "caption": "Infinidat: Goto Other Node"},
-    {"command": "expand_log_message", "caption": "Infinidat: Expand Log Message"}
+    {"command": "expand_log_message", "caption": "Infinidat: Expand Log Message"},
+    {"command": "grep_tracebacks", "caption": "Infinidat: Grep Tracebacks"}
 ]
