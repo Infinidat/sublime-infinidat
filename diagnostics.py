@@ -22,17 +22,23 @@ DATE_FORMATS = [
                 "%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M"]
 
 
+def strptime(datestring):
+    return datetime.strptime(datestring, STRPTIME_FORMAT)
+
+
+def strftime(datetime_object, dateformat=STRPTIME_FORMAT):
+    return datetime_object.strftime(dateformat)
+
+
 def parse_datestring(datestring):
     from argparse import ArgumentTypeError
     from datetime import datetime
-    if datestring == "now":
-        datestring = get_default_timestamp()
     for format in DATE_FORMATS:
         try:
             return datetime.strptime(datestring, format)
         except:
             pass
-    raise ArgumentTypeError("Invalid datetime string: {!r}".format(datestring))
+    sublime.error_message("Invalid datetime string: {!r}".format(datestring))
 
 
 def get_file_prefix(filepath):
@@ -180,9 +186,9 @@ class GotoTimestamp(sublime_plugin.WindowCommand):
         def innerfunc(timestamp_string):
             timestamp = int(timestamp_string)
             try:
-                t0 = datetime.utcfromtimestamp(timestamp_string)
+                t0 = datetime.utcfromtimestamp(timestamp)
             except ValueError:
-                t0 = datetime.utcfromtimestamp(timestamp_string/1000)
+                t0 = datetime.utcfromtimestamp(timestamp/1000)
             goto_timestamp_in_files(self.window, files, t0, "this type of files")
 
         self.window.show_input_panel("Enter timestamp", "", innerfunc, None, None)

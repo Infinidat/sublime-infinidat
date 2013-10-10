@@ -15,7 +15,7 @@ def grep_selection(view, edit, invert_selection=True):
     select_all_lines_containing_current_selection(view)
     if invert_selection:
         view.run_command("invert_selection")
-    [view.erase(edit, region) for region in sorted(view.sel(), key=compare_regions, reverse=True)]
+    _ = [view.erase(edit, region) for region in sorted(view.sel(), key=compare_regions, reverse=True)]
 
 
 def expand_multiline_message(view, selection=None):
@@ -44,7 +44,7 @@ def log_grep_selection(view, edit, invert_selection=True):
     expand_multiline_messages(view)
     if invert_selection:
         view.run_command("invert_selection")
-    [view.erase(edit, region) for region in sorted(view.sel(), key=compare_regions, reverse=True)]
+    _ = [view.erase(edit, region) for region in sorted(view.sel(), key=compare_regions, reverse=True)]
 
 
 def get_selected_region(view):
@@ -109,5 +109,5 @@ class GrepTracebacks(sublime_plugin.TextCommand):
         for selection in self.view.find_all("Traceback", sublime.LITERAL):
             expand_multiline_message(self.view, selection)
         self.view.run_command("invert_selection")
-        [self.view.erase(edit, region) for region in sorted(self.view.sel(), key=compare_regions, reverse=True)]
+        _ = [self.view.erase(edit, region) for region in sorted(self.view.sel(), key=compare_regions, reverse=True)]
 
