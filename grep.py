@@ -23,9 +23,9 @@ def expand_multiline_message(view, selection=None):
     total = len(beginnings)
     for index, region in enumerate(beginnings):
         if region.a <= selection.a and beginnings[(index+1)%total].a >= selection.a:
-            view.sel().add(region)
+            view.sel().add(sublime.Region(region.a, region.b-1))
             expand_multiline_messages(view)
-
+            break
 
 def expand_multiline_messages(view):
     selection = view.sel()
