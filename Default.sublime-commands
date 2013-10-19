@@ -12,5 +12,6 @@
     {"command": "goto_other_node", "caption": "Infinidat: Goto Other Node"},
     {"command": "goto_date", "caption": "Infinidat: Goto Date"},
     {"command": "goto_timestamp", "caption": "Infinidat: Goto Timestamp"},
-    {"command": "prompt_open_file_path", "caption": "Infinidat: Open file"}
+    {"command": "prompt_open_file_path", "caption": "Infinidat: Open file"},
+    {"command": "open_everywhere", "caption": "Infinidat: Open Anything"}
 ]
