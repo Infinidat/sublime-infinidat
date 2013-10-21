@@ -46,7 +46,10 @@ class OpenEverywhereListener(sublime_plugin.EventListener):
 			sublime.status_message(os.path.basename(item.rstrip(os.sep)))
 
 	def get_dir_items(self, dirname):
-		items = [os.path.join(dirname, f) for f in os.listdir(dirname)]
+		try:
+			items = [os.path.join(dirname, f) for f in os.listdir(dirname)]
+		except OSError:
+			return []
 		items = [f + (os.sep if os.path.isdir(f) else "") for f in items]		# add directory indicators
 		# put dirs last.
 		# TODO IMO they should be first instead, but reversing this sort doesn't change the order in the popup anyway
@@ -60,6 +63,10 @@ class OpenEverywhereListener(sublime_plugin.EventListener):
 		Note that we can't change the items in the overlay dynamically, so we close it and recreate it
 		"""
 		items = self.get_dir_items(dirname)
+		if len(items) == 0:
+			# empty dirs or dirs without permissions: we want to reopen the overlay but we can't open it without items,
+			# so we use the same items as before and nothing will change. Hope the user understands...
+			items = OpenEverywhere.items
 		window.run_command("hide_overlay")
 		window.show_quick_panel(items, self.on_done, 0, 0, self.on_highlighted)
 		OpenEverywhere.items = items
