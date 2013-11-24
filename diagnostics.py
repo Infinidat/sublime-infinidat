@@ -121,15 +121,37 @@ def show_timestamp_as_close_as_possible(view, t0):
         return
 
 
+def open_file_and_do_something_with_it(window, filepath, callback):
+    view = window.open_file(filepath)
+
+    def _callback():
+        if view.is_loading():
+            sublime.set_timeout(_callback, 1)
+        else:
+            callback(view)
+
+    _callback()
+
+
+def word_wrap_callback(value=False):
+    def callback(view):
+        view.settings().set("word_wrap", value)
+        return view
+    return callback
+
+
 def goto_timestamp_in_files(window, files, t0, ident):
     try:
         [filepath] = [item['filepath'] for item in files if item['start'] <= t0 and t0 <= item['finish']]
     except ValueError:  # there is no file containing t0
         sublime.error_message("{} not found in {}".format(t0, ident))
         return
-    view = window.open_file(filepath)
-    view.settings().set("word_wrap", False)
-    show_timestamp_as_close_as_possible(view, t0)
+
+    def callback(view):
+        word_wrap_callback()(view)
+        show_timestamp_as_close_as_possible(view, t0)
+
+    open_file_and_do_something_with_it(window, filepath, callback)
 
 
 class OpenNextFile(sublime_plugin.WindowCommand):
@@ -137,7 +159,7 @@ class OpenNextFile(sublime_plugin.WindowCommand):
         filepath = self.window.active_view().file_name()
         series = get_file_series(get_file_prefix(filepath))
         index = (series.index(filepath)+1) % len(series)
-        self.window.open_file(series[index]).settings().set("word_wrap", False)
+        open_file_and_do_something_with_it(window, series[index], word_wrap_callback())
 
 
 class OpenPreviousFile(sublime_plugin.WindowCommand):
@@ -145,7 +167,7 @@ class OpenPreviousFile(sublime_plugin.WindowCommand):
         filepath = self.window.active_view().file_name()
         series = get_file_series(get_file_prefix(filepath))
         index = (series.index(filepath)-1) % len(series)
-        self.window.open_file(series[index]).settings().set("word_wrap", False)
+        open_file(window, series[index], word_wrap_callback())
 
 
 class GotoTrace(sublime_plugin.WindowCommand):
