@@ -99,8 +99,11 @@ def get_files_timeframes(files):
     """:returns: from oldest to newest"""
     def generator():
         for filepath in files:
-            start, finish = get_timeframe_in_file(filepath)
-            yield dict(start=start, finish=finish, filepath=filepath)
+            try:
+                start, finish = get_timeframe_in_file(filepath)
+                yield dict(start=start, finish=finish, filepath=filepath)
+            except:  # bad file
+                pass
     def key(item):
         return item['start']
     return sorted(generator(), key=key)
