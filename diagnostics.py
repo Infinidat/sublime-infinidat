@@ -167,7 +167,7 @@ class OpenPreviousFile(sublime_plugin.WindowCommand):
         filepath = self.window.active_view().file_name()
         series = get_file_series(get_file_prefix(filepath))
         index = (series.index(filepath)-1) % len(series)
-        open_file(window, series[index], word_wrap_callback())
+        open_file_and_do_something_with_it(self.window, series[index], word_wrap_callback())
 
 
 class GotoTrace(sublime_plugin.WindowCommand):
