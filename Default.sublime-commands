@@ -14,4 +14,5 @@
     {"command": "goto_timestamp", "caption": "Infinidat: Goto Timestamp"},
     {"command": "prompt_open_file_path", "caption": "Infinidat: Open file"},
     {"command": "open_everywhere", "caption": "Infinidat: Open Anything"}
+    {"command": "gitorious_clone", "caption": "Infinidat: Gitorious Clone"}
 ]

@@ -23,5 +23,39 @@
             {"caption": "Goto Date", "mnemonic": "", "id": "goto_date", "command":"goto_date"},
             {"caption": "Goto Timestamp", "mnemonic": "", "id": "goto_timestamp", "command":"goto_timestamp"}
         ]
+    },
+    {
+        "caption": "Preferences",
+        "id": "preferences",
+        "children":
+        [
+            {
+                "caption": "Package Settings",
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "Infinidat",
+                        "children":
+                        [
+                            {
+                                "command": "open_file", "args":
+                                {
+                                    "file": "${packages}/Infinidat/Infinidat.sublime-settings"
+                                },
+                                "caption": "Settings – Default"
+                            },
+                            {
+                                "command": "open_file", "args":
+                                {
+                                    "file": "${packages}/User/Infinidat.sublime-settings"
+                                },
+                                "caption": "Settings – User"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 ]
