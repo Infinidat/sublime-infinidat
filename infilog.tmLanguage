@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>bundleUUID</key>
+    <string>D415CA4E-28CE-4D1B-9D29-170F7C118ECF</string>
+    <key>fileTypes</key>
+    <array>
+    </array>
+    <key>firstLineMatch</key>
+    <string>\d+.*module=.*level=.*msg=.*</string>
+    <key>name</key>
+    <string>InfiLog</string>
+    <key>patterns</key>
+    <array>
+        <dict>
+            <key>match</key>
+            <string>\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d(\.\d+)?</string>
+            <key>name</key>
+            <string>constant.numeric.log</string>
+        </dict>
+        <dict>
+            <key>match</key>
+            <string>izbox\[[^\]]+\]pid=\d+:\[[^\]]+\]\s*tid=\d+:\d+ tag=\S+</string>
+            <key>name</key>
+            <string>string.izbox.log</string>
+        </dict>
+        <dict>
+            <key>match</key>
+            <string>level=\S+</string>
+            <key>name</key>
+            <string>entity.name.function.izbox.log</string>
+        </dict>
+        <dict>
+            <key>match</key>
+            <string>module=\S+</string>
+            <key>name</key>
+            <string>keyword.izbox.log</string>
+        </dict>
+        <dict>
+            <key>match</key>
+            <string>izbox-\d+-\d</string>
+            <key>name</key>
+            <string>support.function.izbox.log</string>
+        </dict>
+    </array>
+    <key>scopeName</key>
+    <string>source.log</string>
+    <key>uuid</key>
+    <string>CE8B158B-8D4D-404D-9692-B2F88C9375A5</string>
+</dict>
+</plist>
