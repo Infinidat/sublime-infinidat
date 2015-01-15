@@ -41,7 +41,7 @@
                             {
                                 "command": "open_file", "args":
                                 {
-                                    "file": "${packages}/Infinidat/Infinidat.sublime-settings"
+                                    "file": "${packages}/Infinidat Plugin/Infinidat.sublime-settings"
                                 },
                                 "caption": "Settings – Default"
                             },
