@@ -29,11 +29,15 @@ class GitoriousClone(sublime_plugin.WindowCommand):
         data = proc.stdout.read()
         self.repo_list = json.loads(data.decode("ascii").replace("'", "\""))
         json.dump(self.repo_list, open(self._cache_file, "w"))
-        self.repo_items = sorted(list(self.repo_list.items()), key=lambda kv: kv[0])
+        repo_items = sorted(list(self.repo_list.items()), key=lambda kv: kv[0])
+        if self.repo_items == repo_items:
+            self.window.active_view().set_status("tkc", "")
+            return
+        self.repo_items = repo_items
         if not self.selected:
             # user is still viewing the repository list, so reload it
             self.window.run_command("hide_overlay")
-            self.window.show_quick_panel([k for k, v in self.repo_items], self.on_repo_select)
+            self.window.show_quick_panel([k for k, v in self.repo_items], self.on_repo_select, selected_index=self._current_index)
 
     def on_dst_select(self, clone_dst):
         clone_dst = os.path.expanduser(clone_dst)
@@ -57,15 +61,19 @@ class GitoriousClone(sublime_plugin.WindowCommand):
         self._projector_path = os.path.expanduser(settings.get("projector-path"))
         self._cache_file = os.path.expanduser(settings.get("gitorious-cache-file"))
 
+    def _on_highlighted(self, item_index):
+        self._current_index = item_index
+
     def run(self):
         self._load_settings()
         if not os.path.exists(self._projector_path):
             return
         self.selected = False
+        self._current_index = 0
         self.repo_list = dict()
         if os.path.exists(self._cache_file):
             self.repo_list = json.load(open(self._cache_file))
         self.repo_items = sorted(list(self.repo_list.items()), key=lambda kv: kv[0])
         self.refresh_thread = threading.Thread(target=self._refresh_repo_items)
         self.refresh_thread.start()
-        self.window.show_quick_panel([k for k, v in self.repo_items], self.on_repo_select)
+        self.window.show_quick_panel([k for k, v in self.repo_items], self.on_repo_select, on_highlight=self._on_highlighted)
