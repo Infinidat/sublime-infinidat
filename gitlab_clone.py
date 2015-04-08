@@ -7,7 +7,7 @@ import time
 import itertools
 
 
-class GitLabClone(sublime_plugin.WindowCommand):
+class GitlabClone(sublime_plugin.WindowCommand):
     def _projector_clone(self, git_url, clone_dst):
         proc = subprocess.Popen([self._projector_path, "repository", "clone", git_url], cwd=clone_dst)
         returncode = proc.wait()
