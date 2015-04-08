@@ -7,10 +7,14 @@ import time
 import itertools
 
 
-class GitoriousClone(sublime_plugin.WindowCommand):
+class GitLabClone(sublime_plugin.WindowCommand):
     def _projector_clone(self, git_url, clone_dst):
         proc = subprocess.Popen([self._projector_path, "repository", "clone", git_url], cwd=clone_dst)
-        return proc.wait()
+        returncode = proc.wait()
+        if returncode == 0:
+            self.window.active_view().set_status("tkc", "Cloning done")
+        else:
+            self.window.active_view().set_status("tkc", "Cloning failed with code {}".format(returncode))
 
     def _refresh_progress(self):
         if self.selected:
@@ -22,7 +26,7 @@ class GitoriousClone(sublime_plugin.WindowCommand):
 
     def _refresh_repo_items(self):
         self._progress = itertools.cycle(list(range(5)) + list(reversed(list(range(1, 4)))))
-        proc = subprocess.Popen([self._projector_path, "gitorious", "list"], stdout=subprocess.PIPE)
+        proc = subprocess.Popen([self._projector_path, "gitlab", "list"], stdout=subprocess.PIPE)
         while proc.poll() is None:
             self._refresh_progress()
             time.sleep(0.2)
@@ -42,11 +46,8 @@ class GitoriousClone(sublime_plugin.WindowCommand):
     def on_dst_select(self, clone_dst):
         clone_dst = os.path.expanduser(clone_dst)
         self.window.active_view().set_status("tkc", "Cloning {} into {}...".format(self.git_url, clone_dst))
-        returncode = self._projector_clone(self.git_url, clone_dst)
-        if returncode == 0:
-            self.window.active_view().set_status("tkc", "Cloning done")
-        else:
-            self.window.active_view().set_status("tkc", "Cloning failed with code {}".format(returncode))
+        clone_thread = threading.Thread(target=self._projector_clone, args=(self.git_url, clone_dst))
+        clone_thread.start()
 
     def on_repo_select(self, index):
         self.selected = True
@@ -59,7 +60,7 @@ class GitoriousClone(sublime_plugin.WindowCommand):
     def _load_settings(self):
         settings = sublime.load_settings("Infinidat.sublime-settings")
         self._projector_path = os.path.expanduser(settings.get("projector-path"))
-        self._cache_file = os.path.expanduser(settings.get("gitorious-cache-file"))
+        self._cache_file = os.path.expanduser(settings.get("gitlab-cache-file"))
 
     def _on_highlighted(self, item_index):
         self._current_index = item_index

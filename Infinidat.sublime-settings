@@ -1,4 +1,4 @@
 {
     "projector-path": "/usr/bin/projector",
-    "gitorious-cache-file": "~/.tkc"
+    "gitlab-cache-file": "~/.tkc"
 }

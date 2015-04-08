@@ -57,13 +57,13 @@ Diagnostics
         Infinidat: Open Next File
         Infinidat: Open Previous File
 
-Gitorious clone
+GitLab clone
 ---------------
-    Quickly clone a git repository from a Gitorious server. When activated, the plugin fetches the
+    Quickly clone a git repository from a GitLab server. When activated, the plugin fetches the
     repository list and shows the list using Sublime's quick panel.
     Fetching the list and cloning are done by infi.projector - the path to the projector executable must
     be defined in the plugin settings.
 
-    Activate using the Command Palette (Infinidat: Gitorious Clone) or define keyboard shortcut, for example:
+    Activate using the Command Palette (Infinidat: GitLab Clone) or define keyboard shortcut, for example:
 
-        { "keys": ["ctrl+shift+c"], "command": "gitorious_clone" }
+        { "keys": ["ctrl+shift+c"], "command": "gitlab_clone" }
